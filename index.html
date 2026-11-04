@@ -37,19 +37,20 @@
 
         /* Glow effects */
         .neon-glow-green {
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.4);
         }
         .neon-glow-blue {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
         }
         .text-glow {
             text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
         }
 
-        /* Floating Window Styles */
-        #floating-overlay {
+        /* Floating Bubble Launcher Style */
+        #floating-bubble {
             touch-action: none;
-            transition: box-shadow 0.2s ease;
+            transition: transform 0.1s ease, box-shadow 0.2s ease;
+            z-index: 9999;
         }
 
         /* Pulsing badge */
@@ -61,16 +62,10 @@
             animation: pulse-fast 1.5s infinite;
         }
 
-        /* Card flip / shine effects */
         .epic-card {
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
             border: 2px solid #a855f7;
             box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
-        }
-        .legend-card {
-            background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%);
-            border: 2px solid #f59e0b;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
         }
     </style>
 </head>
@@ -86,12 +81,12 @@
                 <h1 class="gaming-font text-xl font-bold tracking-wider text-emerald-400 text-glow">eFootball Hack v9.4</h1>
                 <p class="text-xs text-slate-400 flex items-center gap-1.5">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    Server Status: <span class="text-emerald-400 font-semibold">BYPASSED (Konami Secure)</span>
+                    Status: <span class="text-emerald-400 font-semibold">Ready to Detach</span>
                 </p>
             </div>
         </div>
-        <button onclick="toggleOverlay()" id="toggle-btn" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5">
-            <i class="fa-solid fa-window-maximize"></i> Overlay Mode
+        <button onclick="popOutOverlayWindow()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow-lg">
+            <i class="fa-solid fa-external-link-alt"></i> Pop Out Window
         </button>
     </header>
 
@@ -103,7 +98,7 @@
             <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
             <div class="flex justify-between items-center mb-4">
                 <span class="text-xs gaming-font tracking-widest text-slate-400 uppercase font-bold">Inject Status</span>
-                <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-medium">Active Session</span>
+                <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-medium">Bubble Active</span>
             </div>
             <div class="grid grid-cols-3 gap-3 text-center">
                 <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
@@ -119,23 +114,65 @@
                     <div id="stat-pulls" class="gaming-font text-lg font-bold text-purple-400">0</div>
                 </div>
             </div>
-            <button onclick="openOverlayWindow()" class="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2 gaming-font text-base tracking-wide">
-                <i class="fa-solid fa-wand-magic-sparkles"></i> BUKA FLOATING CHEAT OVERLAY
-            </button>
+            
+            <div class="grid grid-cols-2 gap-2 mt-4">
+                <button onclick="toggleOverlay()" class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold py-3 rounded-xl border border-slate-700 shadow-lg transition flex items-center justify-center gap-2 gaming-font text-xs">
+                    <i class="fa-solid fa-window-maximize"></i> In-App Overlay
+                </button>
+                <button onclick="popOutOverlayWindow()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2 gaming-font text-xs">
+                    <i class="fa-solid fa-up-right-from-square"></i> Detach Popup
+                </button>
+            </div>
         </div>
 
-        <!-- How to Use / Safety Note -->
+        <!-- Spin Simulator Test in Page -->
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800/80 rounded-2xl p-5 shadow-lg space-y-4">
+            <div class="flex justify-between items-center">
+                <span class="text-xs gaming-font tracking-widest text-slate-400 uppercase font-bold">Box Draw Spin Tester</span>
+                <span class="text-xs text-emerald-400 font-semibold">Aubameyang / Epic Rate Booster</span>
+            </div>
+            
+            <!-- Spinner Box Display -->
+            <div id="main-spin-box" class="bg-slate-950 rounded-xl p-4 border border-slate-800 text-center relative overflow-hidden min-h-[120px] flex flex-col items-center justify-center">
+                <div id="main-spin-placeholder" class="space-y-1">
+                    <i class="fa-solid fa-gift text-2xl text-emerald-400 animate-bounce"></i>
+                    <div class="text-xs text-slate-300">Tekan tombol di bawah untuk mencoba spin!</div>
+                </div>
+                <div id="main-spin-result" class="hidden w-full flex flex-col items-center justify-center animate-pulse-fast">
+                    <div id="main-result-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase mb-1">Epic</div>
+                    <div id="main-result-name" class="gaming-font font-bold text-base text-white">Pierre-Emerick Aubameyang</div>
+                    <div id="main-result-rating" class="text-emerald-400 font-bold text-xs">OVR 104 (Showtime)</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="startMainSpin(1)" class="bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs gaming-font transition shadow">
+                    <i class="fa-solid fa-rotate"></i> Spin 1x (Boosted)
+                </button>
+                <button onclick="startMainSpin(5)" class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-2.5 rounded-xl text-xs gaming-font transition shadow">
+                    <i class="fa-solid fa-bolt-lightning"></i> Spin 5x (Max Rate)
+                </button>
+            </div>
+        </div>
+
+        <!-- How to Detach Notice -->
         <div class="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-4 text-xs text-slate-400 space-y-2">
             <div class="flex items-center gap-2 text-slate-200 font-semibold">
-                <i class="fa-solid fa-shield-halved text-emerald-400"></i> Anti-Ban Protection Active
+                <i class="fa-solid fa-circle-info text-emerald-400"></i> Mode Jendela Mengambang (Detached Window)
             </div>
-            <p>Aplikasi ini menggunakan algoritma proxy spoofing & packet intercept untuk mensimulasikan boost drop-rate box draw eFootball. Buka floating window saat masuk ke menu gacha/box draw untuk hasil optimal.</p>
+            <p>Klik tombol <b>"Pop Out Window"</b> di atas untuk membuka jendela cheat melayang terpisah dari browser utama. Jendela ini akan tetap berada di atas aplikasi/game lain sehingga Anda bisa melakukan spin dengan mudah.</p>
         </div>
 
     </main>
 
-    <!-- FLOATING CHEAT OVERLAY WINDOW (Draggable & Floating) -->
-    <div id="floating-overlay" class="fixed top-12 left-4 w-[350px] sm:w-[380px] bg-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl shadow-2xl neon-glow-green z-50 flex flex-col hidden select-none">
+    <!-- FLOATING BUBBLE LAUNCHER (Draggable on Screen) -->
+    <div id="floating-bubble" class="fixed bottom-10 right-6 w-14 h-14 bg-gradient-to-br from-emerald-500 to-teal-700 rounded-full shadow-2xl neon-glow-green cursor-pointer flex items-center justify-center border-2 border-emerald-300 hover:scale-110 transition active:scale-95" title="Buka eFootball Cheat Overlay" onclick="toggleOverlay()">
+        <i class="fa-solid fa-futbol text-slate-950 text-xl animate-pulse"></i>
+        <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-[9px] font-bold text-white rounded-full flex items-center justify-center border border-slate-950">9+</span>
+    </div>
+
+    <!-- IN-APP FLOATING CHEAT OVERLAY PANEL -->
+    <div id="floating-overlay" class="fixed top-16 left-6 w-[350px] sm:w-[380px] bg-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl shadow-2xl neon-glow-green z-50 flex flex-col hidden select-none">
         
         <!-- Overlay Header / Drag Handle -->
         <div id="overlay-header" class="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between cursor-move rounded-t-2xl">
@@ -144,13 +181,14 @@
                 <span class="gaming-font font-bold text-sm tracking-wider text-emerald-300">eFootball Injector Overlay v9</span>
             </div>
             <div class="flex items-center space-x-2">
+                <button onclick="popOutOverlayWindow()" class="text-emerald-400 hover:text-emerald-300 p-1 transition" title="Pop Out"><i class="fa-solid fa-external-link-alt text-xs"></i></button>
                 <button onclick="minimizeOverlay()" class="text-slate-400 hover:text-white p-1 transition"><i class="fa-solid fa-minus text-xs"></i></button>
                 <button onclick="closeOverlayWindow()" class="text-rose-400 hover:text-rose-300 p-1 transition"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
         </div>
 
         <!-- Overlay Body Controls -->
-        <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+        <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto" id="overlay-body-content">
             
             <!-- Tabs Navigation -->
             <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
@@ -165,7 +203,7 @@
                 <!-- Toggle 1 -->
                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-bold text-slate-200">Max Epic/Showtime Rate</div>
+                        <div class="text-xs font-bold text-slate-200">Max Epic/Aubameyang Rate</div>
                         <div class="text-[10px] text-slate-400">Set drop rate pemain epic jadi 99%</div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
@@ -177,23 +215,11 @@
                 <!-- Toggle 2 -->
                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
                     <div>
-                        <div class="text-xs font-bold text-slate-200">Server Ping Bypass</div>
-                        <div class="text-[10px] text-slate-400">Hubungkan langsung ke server Konami JP</div>
+                        <div class="text-xs font-bold text-slate-200">Server Konami JP Bypass</div>
+                        <div class="text-[10px] text-slate-400">Hubungkan langsung ke server prioritas</div>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="boost-ping" checked class="sr-only peer" onchange="updateSettings()">
-                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
-                    </label>
-                </div>
-
-                <!-- Toggle 3 -->
-                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
-                    <div>
-                        <div class="text-xs font-bold text-slate-200">Anti-Duplicate Protection</div>
-                        <div class="text-[10px] text-slate-400">Mencegah player ampas / duplikat</div>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="boost-dup" checked class="sr-only peer" onchange="updateSettings()">
                         <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
                     </label>
                 </div>
@@ -202,7 +228,7 @@
                 <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 space-y-2">
                     <div class="flex justify-between items-center text-xs">
                         <span class="font-bold text-slate-200">Epic Rate Multiplier</span>
-                        <span id="multiplier-val" class="text-emerald-400 font-bold gaming-font text-sm">10x BOOST</span>
+                        <span id="multiplier-val" class="text-emerald-400 font-bold gaming-font text-sm">25x BOOST</span>
                     </div>
                     <input type="range" id="rate-slider" min="1" max="50" value="25" class="w-full accent-emerald-500 bg-slate-800 rounded-lg appearance-none h-1.5 cursor-pointer" oninput="updateMultiplier(this.value)">
                 </div>
@@ -224,7 +250,7 @@
                         <div class="text-xs text-slate-300 font-medium">Siap Melakukan Spin Booster!</div>
                         <div class="text-[10px] text-emerald-400 font-semibold" id="current-boost-status">Chance Booster: 98.5% Epic</div>
                     </div>
-                    <!-- Pull Result Card (Hidden by default) -->
+                    <!-- Pull Result Card -->
                     <div id="spin-result" class="hidden w-full flex flex-col items-center justify-center animate-pulse-fast">
                         <div id="result-badge" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1">Epic Legend</div>
                         <div id="result-name" class="gaming-font font-bold text-lg text-white">Pierre-Emerick Aubameyang</div>
@@ -234,10 +260,10 @@
 
                 <!-- Spin Buttons -->
                 <div class="grid grid-cols-2 gap-2">
-                    <button onclick="startSpin(1)" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
+                    <button onclick="startOverlaySpin(1)" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
                         <i class="fa-solid fa-rotate"></i> Spin 1x (Boosted)
                     </button>
-                    <button onclick="startSpin(5)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
+                    <button onclick="startOverlaySpin(5)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
                         <i class="fa-solid fa-bolt-lightning"></i> Spin 5x (Max Rate)
                     </button>
                 </div>
@@ -247,12 +273,12 @@
 
         <!-- Overlay Footer -->
         <div class="px-4 py-2.5 bg-slate-950/60 border-t border-slate-800/80 rounded-b-2xl flex items-center justify-between text-[10px] text-slate-400">
-            <span>Redmi Note 17 Overlay Engine</span>
-            <span class="text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-shield"></i> Secure</span>
+            <span>Overlay Detached Ready</span>
+            <span class="text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-shield"></i> Active</span>
         </div>
     </div>
 
-    <!-- Notification Toast / Custom Message Box -->
+    <!-- Notification Toast -->
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 border border-emerald-500/80 text-white px-4 py-2.5 rounded-xl shadow-2xl z-50 hidden text-xs font-medium flex items-center gap-2 neon-glow-green">
         <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
         <span id="toast-msg">Script berhasil disuntikkan ke memori game!</span>
@@ -263,12 +289,11 @@
         eFootball Simulation Overlay &bull; For Entertainment & Testing Purposes Only
     </footer>
 
-    <!-- JavaScript Logic for Dragging & Simulator -->
+    <!-- JavaScript Logic for Dragging Bubble, Overlay & Pop Out Window -->
     <script>
         let totalSpins = 0;
         let totalPulls = 0;
 
-        // Pool of players with rates
         const playerPool = [
             { name: "Pierre-Emerick Aubameyang", type: "EPIC SHOWTIME", ovr: "104", tier: "epic" },
             { name: "Johan Cruyff", type: "EPIC LEGEND", ovr: "105", tier: "epic" },
@@ -281,31 +306,92 @@
         ];
 
         // Toggle floating window open/close
-        function openOverlayWindow() {
+        function toggleOverlay() {
             const overlay = document.getElementById('floating-overlay');
-            overlay.classList.remove('hidden');
-            showToast("Overlay melayang berhasil dibuka!");
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
+                showToast("Panel Cheat Mengambang Dibuka!");
+            } else {
+                overlay.classList.add('hidden');
+            }
         }
 
         function closeOverlayWindow() {
             document.getElementById('floating-overlay').classList.add('hidden');
         }
 
-        function toggleOverlay() {
-            const overlay = document.getElementById('floating-overlay');
-            if (overlay.classList.contains('hidden')) {
-                overlay.classList.remove('hidden');
-            } else {
-                overlay.classList.add('hidden');
-            }
-        }
-
         function minimizeOverlay() {
-            const bodyContent = document.querySelector('#floating-overlay > div:nth-child(2)');
+            const bodyContent = document.getElementById('overlay-body-content');
             if (bodyContent.style.display === 'none') {
                 bodyContent.style.display = 'block';
             } else {
                 bodyContent.style.display = 'none';
+            }
+        }
+
+        // POP OUT WINDOW FEATURE (True Floating / Detached Popup Window)
+        function popOutOverlayWindow() {
+            const popupContent = `
+                <!DOCTYPE html>
+                <html lang="id">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>eFootball Floating Cheat Overlay</title>
+                    <script src="https://cdn.tailwindcss.com"></script>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&display=swap');
+                        body { font-family: 'Inter', sans-serif; background: #0b0f19; color: #f3f4f6; margin: 0; padding: 12px; user-select: none; }
+                        .gaming-font { font-family: 'Rajdhani', sans-serif; }
+                        .epic-card { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%); border: 2px solid #a855f7; }
+                    </style>
+                </head>
+                <body class="bg-slate-950">
+                    <div class="bg-slate-900 border-2 border-emerald-500 rounded-2xl p-4 shadow-2xl space-y-4">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                                <span class="gaming-font font-bold text-sm text-emerald-400">eFootball Detached Overlay</span>
+                            </div>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded-full font-bold">Always on Top</span>
+                        </div>
+                        
+                        <div class="space-y-3">
+                            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200">Aubameyang Boost Rate</div>
+                                    <div class="text-[10px] text-slate-400">99.9% Epic Drop Active</div>
+                                </div>
+                                <input type="checkbox" checked class="accent-emerald-500 w-4 h-4">
+                            </div>
+
+                            <div id="popup-spin-box" class="bg-slate-950 rounded-xl p-3 border border-slate-800 text-center min-h-[90px] flex flex-col items-center justify-center">
+                                <div id="popup-placeholder" class="text-xs text-slate-300">
+                                    <i class="fa-solid fa-gift text-emerald-400 text-lg mb-1"></i><br>Siap Spin di Jendela Mengambang!
+                                </div>
+                                <div id="popup-result" class="hidden">
+                                    <div id="popup-res-name" class="gaming-font font-bold text-base text-white">Pierre-Emerick Aubameyang</div>
+                                    <div id="popup-res-ovr" class="text-emerald-400 text-xs font-bold">OVR 104 (Showtime)</div>
+                                </div>
+                            </div>
+
+                            <button onclick="window.opener && window.opener.doDetachedSpin ? window.opener.doDetachedSpin() : alert('Spin berhasil!')" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide uppercase transition shadow">
+                                <i class="fa-solid fa-bolt"></i> Spin 1x (Boosted)
+                            </button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            let popup = window.open("", "eFootballOverlay", "width=380,height=480,left=100,top=100,alwaysOnTop=yes");
+            if (popup) {
+                popup.document.open();
+                popup.document.write(popupContent);
+                popup.document.close();
+                showToast("Jendela mengambang (Pop-out) berhasil dibuka!");
+            } else {
+                showToast("Pop-up diblokir oleh browser! Izinkan pop-up.");
             }
         }
 
@@ -329,7 +415,6 @@
             }
         }
 
-        // Settings / Multiplier updates
         function updateMultiplier(val) {
             document.getElementById('multiplier-val').innerText = val + 'x BOOST';
             let epicChance = Math.min(99.9, 70 + parseInt(val) * 0.6).toFixed(1) + '%';
@@ -345,14 +430,23 @@
             showToast("Script berhasil diinjeksikan ke memory eFootball!");
         }
 
-        // Spin Simulator Logic
-        function startSpin(count) {
-            const placeholder = document.getElementById('spin-placeholder');
-            const resultBox = document.getElementById('spin-result');
-            const resultBadge = document.getElementById('result-badge');
-            const resultName = document.getElementById('result-name');
-            const resultRating = document.getElementById('result-rating');
-            const spinBox = document.getElementById('spin-box');
+        // Main Spin Simulator
+        function startMainSpin(count) {
+            executeSpin(count, 'main-spin-placeholder', 'main-spin-result', 'main-result-badge', 'main-result-name', 'main-result-rating', 'main-spin-box');
+        }
+
+        // Overlay Spin Simulator
+        function startOverlaySpin(count) {
+            executeSpin(count, 'spin-placeholder', 'spin-result', 'result-badge', 'result-name', 'result-rating', 'spin-box');
+        }
+
+        function executeSpin(count, placeholderId, resultId, badgeId, nameId, ratingId, boxId) {
+            const placeholder = document.getElementById(placeholderId);
+            const resultBox = document.getElementById(resultId);
+            const resultBadge = document.getElementById(badgeId);
+            const resultName = document.getElementById(nameId);
+            const resultRating = document.getElementById(ratingId);
+            const spinBox = document.getElementById(boxId);
 
             placeholder.classList.add('hidden');
             resultBox.classList.remove('hidden');
@@ -361,8 +455,7 @@
             resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-slate-800 text-slate-300";
 
             setTimeout(() => {
-                // With booster active, 90% chance to pull epic/showtime
-                let isEpic = Math.random() < 0.92;
+                let isEpic = Math.random() < 0.95; // 95% rate with booster
                 let chosenPlayer;
 
                 if (isEpic) {
@@ -370,7 +463,7 @@
                     chosenPlayer = epicPlayers[Math.floor(Math.random() * epicPlayers.length)];
                     totalPulls++;
                 } else {
-                    chosenPlayer = playerPool[playerPool.length - 1]; // Base player
+                    chosenPlayer = playerPool[playerPool.length - 1];
                 }
 
                 totalSpins += count;
@@ -378,10 +471,10 @@
                 document.getElementById('stat-pulls').innerText = totalPulls;
 
                 if (chosenPlayer.tier === 'epic') {
-                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-purple-500 text-center relative overflow-hidden min-h-[140px] flex flex-col items-center justify-center epic-card";
+                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-purple-500 text-center relative overflow-hidden min-h-[120px] flex flex-col items-center justify-center epic-card";
                     resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-purple-500/30 text-purple-300 border border-purple-500/50";
                 } else {
-                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-slate-800 text-center relative overflow-hidden min-h-[140px] flex flex-col items-center justify-center";
+                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-slate-800 text-center relative overflow-hidden min-h-[120px] flex flex-col items-center justify-center";
                     resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-slate-800 text-slate-400";
                 }
 
@@ -389,7 +482,7 @@
                 resultName.innerText = chosenPlayer.name;
                 resultRating.innerText = "OVR " + chosenPlayer.ovr + " (Boosted)";
                 showToast(`Berhasil mendapatkan ${chosenPlayer.name}!`);
-            }, 800);
+            }, 700);
         }
 
         // Custom Toast Notification
@@ -402,33 +495,41 @@
             }, 3000);
         }
 
-        // Draggable Overlay Functionality for Mobile & Desktop
+        // Draggable Floating Bubble Launcher & In-App Overlay Window
+        const bubble = document.getElementById('floating-bubble');
         const overlay = document.getElementById('floating-overlay');
         const header = document.getElementById('overlay-header');
 
         let isDragging = false;
         let startX, startY, initialX, initialY;
 
-        header.addEventListener('mousedown', dragStart);
+        // Bubble Dragging
+        bubble.addEventListener('mousedown', dragStart);
         document.addEventListener('mousemove', drag);
         document.addEventListener('mouseup', dragEnd);
 
-        header.addEventListener('touchstart', dragStart, { passive: true });
+        bubble.addEventListener('touchstart', dragStart, { passive: true });
         document.addEventListener('touchmove', drag, { passive: true });
         document.addEventListener('touchend', dragEnd);
+
+        // Overlay Header Dragging
+        header.addEventListener('mousedown', dragStart);
+        header.addEventListener('touchstart', dragStart, { passive: true });
 
         function dragStart(e) {
             isDragging = true;
             startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
             startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
             
-            const rect = overlay.getBoundingClientRect();
+            const targetEl = e.currentTarget === header ? overlay : bubble;
+            const rect = targetEl.getBoundingClientRect();
             initialX = rect.left;
             initialY = rect.top;
+            window.activeDragElement = targetEl;
         }
 
         function drag(e) {
-            if (!isDragging) return;
+            if (!isDragging || !window.activeDragElement) return;
             
             const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
             const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
@@ -436,13 +537,16 @@
             const dx = currentX - startX;
             const dy = currentY - startY;
 
-            overlay.style.left = `${initialX + dx}px`;
-            overlay.style.top = `${initialY + dy}px`;
-            overlay.style.position = 'fixed';
+            window.activeDragElement.style.left = `${initialX + dx}px`;
+            window.activeDragElement.style.top = `${initialY + dy}px`;
+            window.activeDragElement.style.position = 'fixed';
+            window.activeDragElement.style.right = 'auto';
+            window.activeDragElement.style.bottom = 'auto';
         }
 
         function dragEnd() {
             isDragging = false;
+            window.activeDragElement = null;
         }
     </script>
 </body>
