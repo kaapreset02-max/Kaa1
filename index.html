@@ -2,560 +2,448 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Downhill Mountain Bike Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>eFootball Pro Injector & Spin Booster</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
+    <!-- FontAwesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        
         body {
             font-family: 'Inter', sans-serif;
-            touch-action: none;
+            background-color: #0b0f19;
+            color: #f3f4f6;
+            overflow-x: hidden;
             user-select: none;
-            -webkit-user-select: none;
         }
-        canvas {
-            display: block;
-            background: linear-gradient(to bottom, #38bdf8, #bae6fd);
+
+        .gaming-font {
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        /* Custom scrollbar for overlay content */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #10b981;
+            border-radius: 4px;
+        }
+
+        /* Glow effects */
+        .neon-glow-green {
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+        .neon-glow-blue {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        .text-glow {
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+        }
+
+        /* Floating Window Styles */
+        #floating-overlay {
+            touch-action: none;
+            transition: box-shadow 0.2s ease;
+        }
+
+        /* Pulsing badge */
+        @keyframes pulse-fast {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.05); }
+        }
+        .animate-pulse-fast {
+            animation: pulse-fast 1.5s infinite;
+        }
+
+        /* Card flip / shine effects */
+        .epic-card {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+            border: 2px solid #a855f7;
+            box-shadow: 0 0 25px rgba(168, 85, 247, 0.4);
+        }
+        .legend-card {
+            background: linear-gradient(135deg, #451a03 0%, #78350f 50%, #b45309 100%);
+            border: 2px solid #f59e0b;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
         }
     </style>
 </head>
-<body class="bg-slate-950 min-h-screen flex items-center justify-center p-2 sm:p-4 text-slate-100 overflow-hidden">
+<body class="min-h-screen bg-slate-950 flex flex-col justify-between p-4 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
 
-    <!-- Container Utama Game -->
-    <div class="w-full max-w-2xl bg-slate-900 rounded-3xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col relative">
+    <!-- Top Status Header -->
+    <header class="w-full max-w-md mx-auto bg-slate-900/80 backdrop-blur-md border border-slate-800 rounded-2xl p-4 flex items-center justify-between shadow-xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center neon-glow-green">
+                <i class="fa-solid fa-gamepad text-slate-950 font-bold text-lg"></i>
+            </div>
+            <div>
+                <h1 class="gaming-font text-xl font-bold tracking-wider text-emerald-400 text-glow">eFootball Hack v9.4</h1>
+                <p class="text-xs text-slate-400 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Server Status: <span class="text-emerald-400 font-semibold">BYPASSED (Konami Secure)</span>
+                </p>
+            </div>
+        </div>
+        <button onclick="toggleOverlay()" id="toggle-btn" class="bg-slate-800 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center gap-1.5">
+            <i class="fa-solid fa-window-maximize"></i> Overlay Mode
+        </button>
+    </header>
 
-        <!-- HEADER HUD -->
-        <header class="bg-gradient-to-r from-emerald-600 to-teal-700 px-4 py-3 flex items-center justify-between shadow-md z-20">
+    <!-- Main Content / Simulator Launcher -->
+    <main class="w-full max-w-md mx-auto my-6 space-y-4">
+        
+        <!-- Quick Stats Card -->
+        <div class="bg-slate-900/60 backdrop-blur border border-slate-800/80 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+            <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-xs gaming-font tracking-widest text-slate-400 uppercase font-bold">Inject Status</span>
+                <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-medium">Active Session</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 text-center">
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                    <div class="text-xs text-slate-400 mb-1">Epic Rate</div>
+                    <div id="stat-epic" class="gaming-font text-lg font-bold text-emerald-400">98.5%</div>
+                </div>
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                    <div class="text-xs text-slate-400 mb-1">Spin Count</div>
+                    <div id="stat-spins" class="gaming-font text-lg font-bold text-cyan-400">0</div>
+                </div>
+                <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                    <div class="text-xs text-slate-400 mb-1">Epic Pulls</div>
+                    <div id="stat-pulls" class="gaming-font text-lg font-bold text-purple-400">0</div>
+                </div>
+            </div>
+            <button onclick="openOverlayWindow()" class="w-full mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-bold py-3 rounded-xl shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2 gaming-font text-base tracking-wide">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> BUKA FLOATING CHEAT OVERLAY
+            </button>
+        </div>
+
+        <!-- How to Use / Safety Note -->
+        <div class="bg-slate-900/40 border border-slate-800/60 rounded-2xl p-4 text-xs text-slate-400 space-y-2">
+            <div class="flex items-center gap-2 text-slate-200 font-semibold">
+                <i class="fa-solid fa-shield-halved text-emerald-400"></i> Anti-Ban Protection Active
+            </div>
+            <p>Aplikasi ini menggunakan algoritma proxy spoofing & packet intercept untuk mensimulasikan boost drop-rate box draw eFootball. Buka floating window saat masuk ke menu gacha/box draw untuk hasil optimal.</p>
+        </div>
+
+    </main>
+
+    <!-- FLOATING CHEAT OVERLAY WINDOW (Draggable & Floating) -->
+    <div id="floating-overlay" class="fixed top-12 left-4 w-[350px] sm:w-[380px] bg-slate-900/95 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl shadow-2xl neon-glow-green z-50 flex flex-col hidden select-none">
+        
+        <!-- Overlay Header / Drag Handle -->
+        <div id="overlay-header" class="bg-gradient-to-r from-emerald-950 via-slate-900 to-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between cursor-move rounded-t-2xl">
             <div class="flex items-center space-x-2.5">
-                <div class="w-9 h-9 bg-white/10 backdrop-blur rounded-xl flex items-center justify-center text-white font-black shadow border border-white/20">
-                    <i class="fa-solid fa-bicycle text-base"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-sm leading-tight text-white">Downhill Pro</h1>
-                    <p class="text-[10px] text-emerald-200">Keseimbangan & Akrobat Ekstrim</p>
-                </div>
+                <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+                <span class="gaming-font font-bold text-sm tracking-wider text-emerald-300">eFootball Injector Overlay v9</span>
             </div>
-            <div class="flex items-center gap-2">
-                <div class="bg-slate-950/40 px-3 py-1 rounded-xl border border-white/10 text-center">
-                    <span class="text-[9px] uppercase tracking-wider text-emerald-200 block font-semibold">High Score</span>
-                    <span id="high-score" class="text-sm font-extrabold text-amber-400">0m</span>
-                </div>
-                <button onclick="toggleSound()" id="sound-btn" class="w-9 h-9 bg-white/10 hover:bg-white/20 rounded-xl flex items-center justify-center text-white transition border border-white/20">
-                    <i id="sound-icon" class="fa-solid fa-volume-high text-xs"></i>
-                </button>
+            <div class="flex items-center space-x-2">
+                <button onclick="minimizeOverlay()" class="text-slate-400 hover:text-white p-1 transition"><i class="fa-solid fa-minus text-xs"></i></button>
+                <button onclick="closeOverlayWindow()" class="text-rose-400 hover:text-rose-300 p-1 transition"><i class="fa-solid fa-xmark text-sm"></i></button>
             </div>
-        </header>
+        </div>
 
-        <!-- KANVAS GAME & HUD DI ATASNYA -->
-        <main class="relative w-full aspect-[16/10] max-h-[60vh] bg-sky-400 overflow-hidden cursor-pointer" id="game-container">
-            <canvas id="gameCanvas" class="w-full h-full"></canvas>
+        <!-- Overlay Body Controls -->
+        <div class="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+            
+            <!-- Tabs Navigation -->
+            <div class="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('injectors')" id="tab-btn-injectors" class="py-1.5 text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 transition">Cheat Engine</button>
+                <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition">Spin Simulator</button>
+            </div>
 
-            <!-- HUD REAL-TIME DI DALAM KANVAS -->
-            <div class="absolute top-3 left-3 right-3 flex justify-between items-center pointer-events-none z-10">
-                <div class="bg-slate-950/60 backdrop-blur px-3 py-1.5 rounded-xl border border-white/10 shadow flex items-center gap-3">
+            <!-- Tab 1: Injectors & Boosters -->
+            <div id="tab-injectors" class="space-y-3.5">
+                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Pilih Fitur Hack / Boost Chance</div>
+                
+                <!-- Toggle 1 -->
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
                     <div>
-                        <span class="text-[9px] text-slate-400 block uppercase font-bold">Jarak</span>
-                        <span id="live-distance" class="text-lg font-black text-white font-mono">0m</span>
+                        <div class="text-xs font-bold text-slate-200">Max Epic/Showtime Rate</div>
+                        <div class="text-[10px] text-slate-400">Set drop rate pemain epic jadi 99%</div>
                     </div>
-                    <div class="border-l border-white/20 pl-3">
-                        <span class="text-[9px] text-slate-400 block uppercase font-bold">Kecepatan</span>
-                        <span id="live-speed" class="text-lg font-black text-emerald-400 font-mono">0 km/h</span>
-                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="boost-epic" checked class="sr-only peer" onchange="updateSettings()">
+                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
                 </div>
 
-                <div class="bg-slate-950/60 backdrop-blur px-3 py-1.5 rounded-xl border border-white/10 shadow text-right">
-                    <span class="text-[9px] text-slate-400 block uppercase font-bold">Nitro Boost</span>
-                    <div class="w-20 bg-slate-800 h-2.5 rounded-full overflow-hidden mt-1 border border-slate-700">
-                        <div id="nitro-bar" class="bg-amber-400 h-full w-full transition-all duration-100"></div>
+                <!-- Toggle 2 -->
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-slate-200">Server Ping Bypass</div>
+                        <div class="text-[10px] text-slate-400">Hubungkan langsung ke server Konami JP</div>
                     </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="boost-ping" checked class="sr-only peer" onchange="updateSettings()">
+                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
                 </div>
-            </div>
 
-            <!-- TAMPILAN START SCREEN -->
-            <div id="start-screen" class="absolute inset-0 bg-slate-950/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-30 transition-all">
-                <div class="w-20 h-20 bg-emerald-500/20 text-emerald-400 rounded-3xl flex items-center justify-center shadow-2xl mb-4 border-2 border-emerald-500/30 animate-bounce">
-                    <i class="fa-solid fa-person-biking text-4xl"></i>
+                <!-- Toggle 3 -->
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 flex items-center justify-between">
+                    <div>
+                        <div class="text-xs font-bold text-slate-200">Anti-Duplicate Protection</div>
+                        <div class="text-[10px] text-slate-400">Mencegah player ampas / duplikat</div>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="boost-dup" checked class="sr-only peer" onchange="updateSettings()">
+                        <div class="w-9 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
                 </div>
-                <h2 class="text-2xl font-black text-white tracking-tight mb-1">Downhill Mountain Bike</h2>
-                <p class="text-xs text-slate-300 max-w-[280px] mb-6">Turuni perbukitan curam, jaga keseimbangan agar tidak terjungkal, lakukan flip di udara untuk bonus, dan gunakan nitro!</p>
-                
-                <button onclick="startGame()" class="w-full max-w-[220px] py-3.5 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-slate-950 font-black rounded-2xl shadow-lg shadow-emerald-500/30 transition active:scale-95 text-sm flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-play"></i> Mulai Petualangan
+
+                <!-- Slider Multiplier -->
+                <div class="bg-slate-950/80 p-3 rounded-xl border border-slate-800/80 space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-slate-200">Epic Rate Multiplier</span>
+                        <span id="multiplier-val" class="text-emerald-400 font-bold gaming-font text-sm">10x BOOST</span>
+                    </div>
+                    <input type="range" id="rate-slider" min="1" max="50" value="25" class="w-full accent-emerald-500 bg-slate-800 rounded-lg appearance-none h-1.5 cursor-pointer" oninput="updateMultiplier(this.value)">
+                </div>
+
+                <!-- Injection Trigger Button -->
+                <button onclick="triggerInjection()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs tracking-wider uppercase transition shadow-lg gaming-font flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-bolt"></i> Terapkan Script ke eFootball
                 </button>
             </div>
 
-            <!-- TAMPILAN GAME OVER / CRASH -->
-            <div id="gameover-screen" class="absolute inset-0 bg-slate-950/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center hidden z-30">
-                <div class="w-16 h-16 bg-rose-500/20 text-rose-400 rounded-2xl flex items-center justify-center mb-3 text-2xl border border-rose-500/30">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
-                </div>
-                <h3 class="text-xl font-extrabold text-white mb-1">Kecelakaan Terjadi! (Crash)</h3>
-                <p class="text-xs text-slate-400 mb-4">Sepeda Anda terjungkal atau mendarat terlalu keras.</p>
+            <!-- Tab 2: Spin Simulator Test -->
+            <div id="tab-simulator" class="space-y-3.5 hidden">
+                <div class="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Live Gacha Box Draw Test</div>
                 
-                <div class="w-full max-w-[240px] bg-slate-900 border border-slate-800 rounded-2xl p-4 mb-5 space-y-2 shadow-inner text-left">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="text-slate-400">Jarak Tempuh</span>
-                        <span id="final-distance" class="font-black text-white text-base font-mono">0m</span>
+                <!-- Spinner Box Display Area -->
+                <div id="spin-box" class="bg-slate-950 rounded-xl p-4 border border-slate-800 text-center relative overflow-hidden min-h-[140px] flex flex-col items-center justify-center">
+                    <div id="spin-placeholder" class="space-y-2">
+                        <i class="fa-solid fa-gift text-3xl text-emerald-400 animate-bounce"></i>
+                        <div class="text-xs text-slate-300 font-medium">Siap Melakukan Spin Booster!</div>
+                        <div class="text-[10px] text-emerald-400 font-semibold" id="current-boost-status">Chance Booster: 98.5% Epic</div>
                     </div>
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="text-slate-400">Flip Berhasil</span>
-                        <span id="final-flips" class="font-black text-teal-400 text-base font-mono">0x</span>
-                    </div>
-                    <div class="border-t border-slate-800 pt-2 flex justify-between items-center text-xs">
-                        <span class="text-slate-400">Rekor Terbaik</span>
-                        <span id="final-highscore" class="font-black text-amber-400 text-base font-mono">0m</span>
+                    <!-- Pull Result Card (Hidden by default) -->
+                    <div id="spin-result" class="hidden w-full flex flex-col items-center justify-center animate-pulse-fast">
+                        <div id="result-badge" class="px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1">Epic Legend</div>
+                        <div id="result-name" class="gaming-font font-bold text-lg text-white">Pierre-Emerick Aubameyang</div>
+                        <div id="result-rating" class="text-emerald-400 font-bold text-sm">OVR 104 (Showtime)</div>
                     </div>
                 </div>
 
-                <div class="flex gap-3 w-full max-w-[240px]">
-                    <button onclick="resetGame()" class="flex-1 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-bold rounded-xl shadow-lg transition active:scale-95 text-xs flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-rotate-right"></i> Coba Lagi
+                <!-- Spin Buttons -->
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="startSpin(1)" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-slate-950 font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
+                        <i class="fa-solid fa-rotate"></i> Spin 1x (Boosted)
+                    </button>
+                    <button onclick="startSpin(5)" class="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold py-2.5 rounded-xl text-xs gaming-font tracking-wide transition shadow">
+                        <i class="fa-solid fa-bolt-lightning"></i> Spin 5x (Max Rate)
                     </button>
                 </div>
             </div>
-        </main>
 
-        <!-- KONTROL SENTUH DI LAYAR (MOBILE FRIENDLY) & INSTRUKSI -->
-        <footer class="p-4 bg-slate-900 border-t border-slate-800 flex flex-col gap-3">
-            <div class="grid grid-cols-4 gap-2">
-                <!-- Tombol Condong Belakang / Rem -->
-                <button id="btn-tilt-back" class="py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 font-bold rounded-2xl text-xs flex flex-col items-center justify-center gap-1 transition shadow border border-slate-700">
-                    <i class="fa-solid fa-arrow-rotate-left text-sm text-sky-400"></i>
-                    <span>Tarik / Rem</span>
-                </button>
-                <!-- Tombol Condong Depan -->
-                <button id="btn-tilt-forward" class="py-3 bg-slate-800 hover:bg-slate-700 active:bg-slate-600 text-slate-200 font-bold rounded-2xl text-xs flex flex-col items-center justify-center gap-1 transition shadow border border-slate-700">
-                    <i class="fa-solid fa-arrow-rotate-right text-sm text-sky-400"></i>
-                    <span>Maju / Nungging</span>
-                </button>
-                <!-- Tombol Gas / Kayuh -->
-                <button id="btn-gas" class="py-3 bg-emerald-600/20 text-emerald-400 border border-emerald-500/30 hover:bg-emerald-600/30 active:bg-emerald-600/40 font-bold rounded-2xl text-xs flex flex-col items-center justify-center gap-1 transition shadow">
-                    <i class="fa-solid fa-bolt text-sm text-emerald-400"></i>
-                    <span>Gas / Kayuh</span>
-                </button>
-                <!-- Tombol Nitro -->
-                <button id="btn-nitro" class="py-3 bg-amber-500/20 text-amber-400 border border-amber-500/30 hover:bg-amber-500/30 active:bg-amber-500/40 font-bold rounded-2xl text-xs flex flex-col items-center justify-center gap-1 transition shadow">
-                    <i class="fa-solid fa-fire text-sm text-amber-400"></i>
-                    <span>NITRO</span>
-                </button>
-            </div>
-            <div class="text-[11px] text-slate-400 text-center flex items-center justify-center gap-3">
-                <span>PC: <b>A/D</b> atau <b>Panah Kiri/Kanan</b> (Balance)</span>
-                <span>&bull;</span>
-                <span><b>Spasi</b> (Nitro)</span>
-            </div>
-        </footer>
+        </div>
 
+        <!-- Overlay Footer -->
+        <div class="px-4 py-2.5 bg-slate-950/60 border-t border-slate-800/80 rounded-b-2xl flex items-center justify-between text-[10px] text-slate-400">
+            <span>Redmi Note 17 Overlay Engine</span>
+            <span class="text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-shield"></i> Secure</span>
+        </div>
     </div>
 
-    <!-- SKRIP JAVASCRIPT GAME -->
+    <!-- Notification Toast / Custom Message Box -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 border border-emerald-500/80 text-white px-4 py-2.5 rounded-xl shadow-2xl z-50 hidden text-xs font-medium flex items-center gap-2 neon-glow-green">
+        <i class="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+        <span id="toast-msg">Script berhasil disuntikkan ke memori game!</span>
+    </div>
+
+    <!-- Footer Credit -->
+    <footer class="text-center text-[11px] text-slate-500 py-2">
+        eFootball Simulation Overlay &bull; For Entertainment & Testing Purposes Only
+    </footer>
+
+    <!-- JavaScript Logic for Dragging & Simulator -->
     <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        let totalSpins = 0;
+        let totalPulls = 0;
 
-        function resizeCanvas() {
-            const container = document.getElementById('game-container');
-            canvas.width = container.clientWidth;
-            canvas.height = container.clientHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+        // Pool of players with rates
+        const playerPool = [
+            { name: "Pierre-Emerick Aubameyang", type: "EPIC SHOWTIME", ovr: "104", tier: "epic" },
+            { name: "Johan Cruyff", type: "EPIC LEGEND", ovr: "105", tier: "epic" },
+            { name: "Ronaldinho Gaúcho", type: "EPIC ICON", ovr: "106", tier: "epic" },
+            { name: "Lionel Messi", type: "SHOWTIME 2026", ovr: "105", tier: "epic" },
+            { name: "Neymar Jr", type: "EPIC BOOSTER", ovr: "104", tier: "epic" },
+            { name: "Karl-Heinz Rummenigge", type: "EPIC STRIKER", ovr: "104", tier: "epic" },
+            { name: "Patrick Vieira", type: "EPIC DMF", ovr: "103", tier: "epic" },
+            { name: "Standard GP Player", type: "BASE CARD", ovr: "88", tier: "base" }
+        ];
 
-        // Variabel Game State
-        let gameState = 'START'; // START, PLAYING, GAMEOVER
-        let distance = 0;
-        let speed = 0;
-        let nitro = 100;
-        let flipsCount = 0;
-        let highScore = localStorage.getItem('downhill_highscore') || 0;
-        document.getElementById('high-score').innerText = Math.floor(highScore) + 'm';
-
-        let soundEnabled = true;
-
-        // Audio Sintetis Web Audio API
-        let audioCtx = null;
-        function initAudio() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        // Toggle floating window open/close
+        function openOverlayWindow() {
+            const overlay = document.getElementById('floating-overlay');
+            overlay.classList.remove('hidden');
+            showToast("Overlay melayang berhasil dibuka!");
         }
 
-        function playSound(type) {
-            if (!soundEnabled) return;
-            initAudio();
-            if (!audioCtx) return;
-
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
-
-            if (type === 'nitro') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(120, now);
-                osc.frequency.exponentialRampToValueAtTime(300, now + 0.3);
-                gain.gain.setValueAtTime(0.2, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            } else if (type === 'crash') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(80, now);
-                osc.frequency.linearRampToValueAtTime(30, now + 0.4);
-                gain.gain.setValueAtTime(0.4, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
-                osc.start(now);
-                osc.stop(now + 0.4);
-            }
+        function closeOverlayWindow() {
+            document.getElementById('floating-overlay').classList.add('hidden');
         }
 
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            document.getElementById('sound-icon').className = soundEnabled ? "fa-solid fa-volume-high text-xs" : "fa-solid fa-volume-xmark text-xs";
-        }
-
-        // Generasi Terrain Prosedural (Perbukitan Halus & Bergelombang)
-        let terrainPoints = [];
-        function generateTerrain() {
-            terrainPoints = [];
-            let length = 15000; // Panjang lintasan dalam meter piksel
-            let x = 0;
-            let y = 300;
-            let slope = 0.2;
-
-            while (x < length) {
-                terrainPoints.push({ x: x, y: y });
-                // Tambahkan gelombang bukit sinusoidal dan acak
-                x += 40;
-                slope += (Math.random() - 0.48) * 0.15;
-                slope = Math.max(-0.6, Math.min(0.8, slope)); // Batasi kecuraman
-                y += slope * 40;
-                // Jaga agar tidak keluar batas vertikal terlalu jauh
-                y = Math.max(150, Math.min(canvas.height - 100, y));
-            }
-        }
-
-        // Cari ketinggian tanah (Y) pada koordinat X tertentu menggunakan interpolasi linier
-        function getTerrainHeight(xPos) {
-            if (terrainPoints.length === 0) return canvas.height - 100;
-            // Cari titik terdekat
-            let index = Math.floor(xPos / 40);
-            if (index < 0) index = 0;
-            if (index >= terrainPoints.length - 1) index = terrainPoints.length - 2;
-
-            let p1 = terrainPoints[index];
-            let p2 = terrainPoints[index + 1];
-            if (!p1 || !p2) return canvas.height - 100;
-
-            let ratio = (xPos - p1.x) / (p2.x - p1.x);
-            return p1.y + ratio * (p2.y - p1.y);
-        }
-
-        // Ambil sudut kemiringan tanah (slope angle)
-        function getTerrainAngle(xPos) {
-            let h1 = getTerrainHeight(xPos - 5);
-            let h2 = getTerrainHeight(xPos + 5);
-            return Math.atan2(h2 - h1, 10);
-        }
-
-        // Objek Sepeda & Pengendara
-        let bike = {
-            x: 200,
-            y: 100,
-            vx: 0,
-            vy: 0,
-            angle: 0,
-            angularVelocity: 0,
-            rotation: 0,
-            isAirborne: false,
-            wheelBase: 40,
-            totalFlips: 0
-        };
-
-        // Status Kontrol Tombol
-        let keys = { left: false, right: false, gas: false, nitro: false };
-
-        window.addEventListener('keydown', (e) => {
-            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = true;
-            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = true;
-            if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.gas = true;
-            if (e.code === 'Space') { e.preventDefault(); keys.nitro = true; }
-        });
-
-        window.addEventListener('keyup', (e) => {
-            if (e.code === 'ArrowLeft' || e.code === 'KeyA') keys.left = false;
-            if (e.code === 'ArrowRight' || e.code === 'KeyD') keys.right = false;
-            if (e.code === 'ArrowUp' || e.code === 'KeyW') keys.gas = false;
-            if (e.code === 'Space') keys.nitro = false;
-        });
-
-        // Event listener untuk tombol touch di layar
-        function bindTouch(id, keyName) {
-            const el = document.getElementById(id);
-            el.addEventListener('touchstart', (e) => { e.preventDefault(); keys[keyName] = true; });
-            el.addEventListener('touchend', (e) => { e.preventDefault(); keys[keyName] = false; });
-            el.addEventListener('mousedown', () => { keys[keyName] = true; });
-            el.addEventListener('mouseup', () => { keys[keyName] = false; });
-        }
-        bindTouch('btn-tilt-back', 'left');
-        bindTouch('btn-tilt-forward', 'right');
-        bindTouch('btn-gas', 'gas');
-        bindTouch('btn-nitro', 'nitro');
-
-        function startGame() {
-            generateTerrain();
-            gameState = 'PLAYING';
-            distance = 0;
-            speed = 0;
-            nitro = 100;
-            flipsCount = 0;
-            bike.x = 150;
-            bike.y = getTerrainHeight(150) - 40;
-            bike.vx = 4;
-            bike.vy = 0;
-            bike.rotation = 0;
-            bike.angularVelocity = 0;
-            bike.totalFlips = 0;
-
-            document.getElementById('start-screen').classList.add('hidden');
-            document.getElementById('gameover-screen').classList.add('hidden');
-        }
-
-        function gameOver() {
-            gameState = 'GAMEOVER';
-            playSound('crash');
-
-            let finalDistMeters = Math.floor(distance / 10);
-            if (finalDistMeters > highScore) {
-                highScore = finalDistMeters;
-                localStorage.setItem('downhill_highscore', highScore);
-                document.getElementById('high-score').innerText = highScore + 'm';
-            }
-
-            document.getElementById('final-distance').innerText = finalDistMeters + 'm';
-            document.getElementById('final-flips').innerText = bike.totalFlips + 'x';
-            document.getElementById('final-highscore').innerText = highScore + 'm';
-            document.getElementById('gameover-screen').classList.remove('hidden');
-        }
-
-        function resetGame() {
-            startGame();
-        }
-
-        // Loop Update Fisika Game
-        function update() {
-            if (gameState !== 'PLAYING') return;
-
-            // Gravitasi & Kecepatan
-            bike.vy += 0.35;
-            bike.x += bike.vx;
-            bike.y += bike.vy;
-
-            distance = bike.x - 150;
-
-            // Cek Nitro
-            if (keys.nitro && nitro > 0) {
-                bike.vx += 0.3;
-                nitro = Math.max(0, nitro - 0.8);
-                if (Math.random() < 0.3) playSound('nitro');
+        function toggleOverlay() {
+            const overlay = document.getElementById('floating-overlay');
+            if (overlay.classList.contains('hidden')) {
+                overlay.classList.remove('hidden');
             } else {
-                nitro = Math.min(100, nitro + 0.15);
+                overlay.classList.add('hidden');
             }
+        }
 
-            // Gas / Kayuh
-            if (keys.gas) {
-                bike.vx += 0.12;
-            }
-
-            // Kontrol Keseimbangan / Rotasi di Udara atau Tanah
-            let terrainY = getTerrainHeight(bike.x);
-            let terrainAngle = getTerrainAngle(bike.x);
-
-            bike.isAirborne = bike.y + 25 < terrainY;
-
-            if (bike.isAirborne) {
-                // Akrobat / Rotasi di Udara
-                if (keys.left) bike.angularVelocity -= 0.007;
-                if (keys.right) bike.angularVelocity += 0.007;
-                bike.rotation += bike.angularVelocity;
-                bike.angularVelocity *= 0.99; // Hambatan udara
-
-                // Hitung Flip
-                if (Math.abs(bike.rotation) >= Math.PI * 2) {
-                    bike.totalFlips++;
-                    bike.rotation %= (Math.PI * 2);
-                }
+        function minimizeOverlay() {
+            const bodyContent = document.querySelector('#floating-overlay > div:nth-child(2)');
+            if (bodyContent.style.display === 'none') {
+                bodyContent.style.display = 'block';
             } else {
-                // Di atas tanah: Mengikuti kontur bukit dengan penyesuaian rotasi manual
-                if (keys.left) bike.rotation -= 0.04;
-                if (keys.right) bike.rotation += 0.04;
+                bodyContent.style.display = 'none';
+            }
+        }
 
-                // Snap rotasi perlahan menyesuaikan kemiringan tanah jika tidak ditekan
-                let targetRot = terrainAngle;
-                bike.rotation += (targetRot - bike.rotation) * 0.2;
-                bike.angularVelocity = 0;
+        // Tab Switcher
+        function switchTab(tabName) {
+            const tabInjectors = document.getElementById('tab-injectors');
+            const tabSimulator = document.getElementById('tab-simulator');
+            const btnInjectors = document.getElementById('tab-btn-injectors');
+            const btnSimulator = document.getElementById('tab-btn-simulator');
 
-                // Kontak dengan tanah
-                bike.y = terrainY - 25;
-                bike.vy = 0;
+            if (tabName === 'injectors') {
+                tabInjectors.classList.remove('hidden');
+                tabSimulator.classList.add('hidden');
+                btnInjectors.className = "py-1.5 text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 transition";
+                btnSimulator.className = "py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+            } else {
+                tabSimulator.classList.remove('hidden');
+                tabInjectors.classList.add('hidden');
+                btnSimulator.className = "py-1.5 text-xs font-semibold rounded-lg bg-emerald-500 text-slate-950 transition";
+                btnInjectors.className = "py-1.5 text-xs font-semibold rounded-lg text-slate-400 hover:text-white transition";
+            }
+        }
 
-                // Akselerasi berdasarkan kemiringan (menurun = cepat, menanjak = lambat)
-                let slopeEffect = Math.sin(terrainAngle) * 0.45;
-                bike.vx += slopeEffect;
-                bike.vx = Math.max(1, Math.min(22, bike.vx)); // Batasi kecepatan min/max
+        // Settings / Multiplier updates
+        function updateMultiplier(val) {
+            document.getElementById('multiplier-val').innerText = val + 'x BOOST';
+            let epicChance = Math.min(99.9, 70 + parseInt(val) * 0.6).toFixed(1) + '%';
+            document.getElementById('stat-epic').innerText = epicChance;
+            document.getElementById('current-boost-status').innerText = 'Chance Booster: ' + epicChance + ' Epic';
+        }
 
-                // Hambatan gesek tanah
-                bike.vx *= 0.985;
+        function updateSettings() {
+            showToast("Konfigurasi script cheat diperbarui!");
+        }
 
-                // Cek Crash: Jika sudut pendaratan/sepeda terlalu meleset dari tanah saat mendarat
-                let angleDiff = Math.abs(bike.rotation - terrainAngle);
-                while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
-                angleDiff = Math.abs(angleDiff);
+        function triggerInjection() {
+            showToast("Script berhasil diinjeksikan ke memory eFootball!");
+        }
 
-                if (angleDiff > 1.25) { // Terlalu miring saat mendarat
-                    gameOver();
+        // Spin Simulator Logic
+        function startSpin(count) {
+            const placeholder = document.getElementById('spin-placeholder');
+            const resultBox = document.getElementById('spin-result');
+            const resultBadge = document.getElementById('result-badge');
+            const resultName = document.getElementById('result-name');
+            const resultRating = document.getElementById('result-rating');
+            const spinBox = document.getElementById('spin-box');
+
+            placeholder.classList.add('hidden');
+            resultBox.classList.remove('hidden');
+            resultName.innerText = "Mengkalkulasi Rate Box Draw...";
+            resultRating.innerText = "Menembus server Konami...";
+            resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-slate-800 text-slate-300";
+
+            setTimeout(() => {
+                // With booster active, 90% chance to pull epic/showtime
+                let isEpic = Math.random() < 0.92;
+                let chosenPlayer;
+
+                if (isEpic) {
+                    const epicPlayers = playerPool.filter(p => p.tier === 'epic');
+                    chosenPlayer = epicPlayers[Math.floor(Math.random() * epicPlayers.length)];
+                    totalPulls++;
+                } else {
+                    chosenPlayer = playerPool[playerPool.length - 1]; // Base player
                 }
-            }
 
-            // Cek jika jatuh ke bawah layar (jurang)
-            if (bike.y > canvas.height + 50) {
-                gameOver();
-            }
+                totalSpins += count;
+                document.getElementById('stat-spins').innerText = totalSpins;
+                document.getElementById('stat-pulls').innerText = totalPulls;
 
-            // Update UI Speedometer & Nitro Bar
-            speed = Math.floor(bike.vx * 7);
-            document.getElementById('live-speed').innerText = speed + ' km/h';
-            document.getElementById('live-distance').innerText = Math.floor(distance / 10) + 'm';
-            document.getElementById('nitro-bar').style.width = nitro + '%';
+                if (chosenPlayer.tier === 'epic') {
+                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-purple-500 text-center relative overflow-hidden min-h-[140px] flex flex-col items-center justify-center epic-card";
+                    resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-purple-500/30 text-purple-300 border border-purple-500/50";
+                } else {
+                    spinBox.className = "bg-slate-950 rounded-xl p-4 border border-slate-800 text-center relative overflow-hidden min-h-[140px] flex flex-col items-center justify-center";
+                    resultBadge.className = "px-3 py-1 rounded-full text-[10px] font-bold uppercase mb-1 bg-slate-800 text-slate-400";
+                }
+
+                resultBadge.innerText = chosenPlayer.type;
+                resultName.innerText = chosenPlayer.name;
+                resultRating.innerText = "OVR " + chosenPlayer.ovr + " (Boosted)";
+                showToast(`Berhasil mendapatkan ${chosenPlayer.name}!`);
+            }, 800);
         }
 
-        // Loop Render Grafis Kanvas
-        function draw() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Kamera mengikuti sepeda dengan offset halus
-            let cameraX = bike.x - canvas.width / 3;
-            let cameraY = Math.max(0, bike.y - canvas.height / 2);
-
-            ctx.save();
-            ctx.translate(-cameraX, -cameraY);
-
-            // 1. Latar Belakang Parallax Gunung Jauh
-            ctx.fillStyle = "#7dd3fc";
-            ctx.beginPath();
-            ctx.moveTo(cameraX, canvas.height + cameraY);
-            for (let x = cameraX - 200; x < cameraX + canvas.width + 200; x += 100) {
-                let h = 200 + Math.sin(x * 0.002) * 80;
-                ctx.lineTo(x, h);
-            }
-            ctx.lineTo(cameraX + canvas.width + 200, canvas.height + cameraY);
-            ctx.fill();
-
-            // 2. Gambar Lintasan Bukit / Terrain Utama
-            ctx.fillStyle = "#0f766e"; // Warna sisi bukit gelap
-            ctx.beginPath();
-            ctx.moveTo(terrainPoints[0].x, canvas.height + 1000);
-            for (let i = 0; i < terrainPoints.length; i++) {
-                ctx.lineTo(terrainPoints[i].x, terrainPoints[i].y);
-            }
-            ctx.lineTo(terrainPoints[terrainPoints.length - 1].x, canvas.height + 1000);
-            ctx.closePath();
-            ctx.fill();
-
-            // Garis permukaan bukit hijau terang
-            ctx.strokeStyle = "#14b8a6";
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            for (let i = 0; i < terrainPoints.length; i++) {
-                if (i === 0) ctx.moveTo(terrainPoints[i].x, terrainPoints[i].y);
-                else ctx.lineTo(terrainPoints[i].x, terrainPoints[i].y);
-            }
-            ctx.stroke();
-
-            // 3. Gambar Sepeda & Pengendara
-            ctx.save();
-            ctx.translate(bike.x, bike.y);
-            ctx.rotate(bike.rotation);
-
-            // Rangka Sepeda
-            ctx.strokeStyle = "#f43f5e";
-            ctx.lineWidth = 5;
-            ctx.beginPath();
-            ctx.moveTo(-18, 5);
-            ctx.lineTo(12, 5);
-            ctx.lineTo(0, -15);
-            ctx.closePath();
-            ctx.moveTo(0, -15);
-            ctx.lineTo(-12, -22); // Stang
-            ctx.stroke();
-
-            // Roda Depan & Belakang
-            drawWheel(-18, 12);
-            drawWheel(18, 12);
-
-            // Badan Pengendara (Orang)
-            ctx.fillStyle = "#3b82f6";
-            ctx.beginPath();
-            ctx.arc(0, -22, 7, 0, Math.PI * 2); // Kepala helm
-            ctx.fill();
-
-            ctx.strokeStyle = "#1e293b";
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            ctx.moveTo(0, -15);
-            ctx.lineTo(-6, -5); // Badan
-            ctx.moveTo(0, -18);
-            ctx.lineTo(-12, -22); // Tangan ke stang
-            ctx.moveTo(-6, -5);
-            ctx.lineTo(-12, 8); // Kaki ke pedal
-            ctx.stroke();
-
-            // Efek Api Nitro
-            if (keys.nitro && nitro > 0) {
-                ctx.fillStyle = "#fbbf24";
-                ctx.beginPath();
-                ctx.moveTo(-25, 5);
-                ctx.lineTo(-35 + Math.random() * -10, 2 + Math.random() * 6);
-                ctx.lineTo(-25, 10);
-                ctx.closePath();
-                ctx.fill();
-            }
-
-            ctx.restore();
-            ctx.restore();
+        // Custom Toast Notification
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
         }
 
-        function drawWheel(wx, wy) {
-            ctx.fillStyle = "#0f172a";
-            ctx.beginPath();
-            ctx.arc(wx, wy, 13, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = "#cbd5e1";
-            ctx.lineWidth = 3;
-            ctx.stroke();
+        // Draggable Overlay Functionality for Mobile & Desktop
+        const overlay = document.getElementById('floating-overlay');
+        const header = document.getElementById('overlay-header');
 
-            // Jari-jari roda berputar
-            ctx.strokeStyle = "#64748b";
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(wx, wy);
-            ctx.lineTo(wx + Math.cos(bike.x * 0.1) * 11, wy + Math.sin(bike.x * 0.1) * 11);
-            ctx.stroke();
+        let isDragging = false;
+        let startX, startY, initialX, initialY;
+
+        header.addEventListener('mousedown', dragStart);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', dragEnd);
+
+        header.addEventListener('touchstart', dragStart, { passive: true });
+        document.addEventListener('touchmove', drag, { passive: true });
+        document.addEventListener('touchend', dragEnd);
+
+        function dragStart(e) {
+            isDragging = true;
+            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+            startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+            
+            const rect = overlay.getBoundingClientRect();
+            initialX = rect.left;
+            initialY = rect.top;
         }
 
-        function mainLoop() {
-            update();
-            draw();
-            requestAnimationFrame(mainLoop);
+        function drag(e) {
+            if (!isDragging) return;
+            
+            const currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+            const currentY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+            
+            const dx = currentX - startX;
+            const dy = currentY - startY;
+
+            overlay.style.left = `${initialX + dx}px`;
+            overlay.style.top = `${initialY + dy}px`;
+            overlay.style.position = 'fixed';
         }
 
-        window.onload = function() {
-            generateTerrain();
-            requestAnimationFrame(mainLoop);
-        };
+        function dragEnd() {
+            isDragging = false;
+        }
     </script>
 </body>
 </html>
